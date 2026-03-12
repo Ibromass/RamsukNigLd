@@ -121,7 +121,7 @@ text-align:center;
 }
 
 .hero::before {
-background-image: url("/Images/product7.jpg");
+background-image: url("Images/product7.jpg");
 content: "";
 position: absolute;
 background-size: cover;
