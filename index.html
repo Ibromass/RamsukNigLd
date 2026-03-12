@@ -106,10 +106,6 @@
 </div>
 
 <script>
-/**
- * A simple, built-in counter that doesn't require external libraries.
- * It will work even if your internet is down or a CDN is blocked.
- */
 function animateValue(id, start, end, duration, suffix = "") {
     const obj = document.getElementById(id);
     if (!obj) return;
@@ -118,25 +114,33 @@ function animateValue(id, start, end, duration, suffix = "") {
     const step = (timestamp) => {
         if (!startTimestamp) startTimestamp = timestamp;
         const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        
-        // This calculates the current number and adds commas for 8,500
         let currentNum = Math.floor(progress * (end - start) + start);
         obj.innerHTML = currentNum.toLocaleString() + suffix;
-        
-        if (progress < 1) {
-            window.requestAnimationFrame(step);
-        }
+        if (progress < 1) window.requestAnimationFrame(step);
     };
     window.requestAnimationFrame(step);
 }
 
-// Run the animations as soon as the page loads
+// THIS PART WAITS UNTIL YOU SCROLL TO THE SECTION
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+            // Start animations ONLY when visible
+            animateValue("happy-customers", 0, 8500, 2000, "+");
+            animateValue("installed-capacity", 0, 25, 1500, "MW");
+            animateValue("years-experience", 0, 15, 1500, "+");
+            
+            observer.unobserve(entry.target); // Stop watching after it runs once
+        }
+    });
+}, { threshold: 0.5 }); // Trigger when 50% of the section is visible
+
+// Tell the observer to watch your "stats" container
 window.addEventListener('DOMContentLoaded', () => {
-    // animateValue(ID, Start, End, Duration_in_ms, Suffix)
-    animateValue("happy-customers", 0, 8500, 2000, "+");
-    animateValue("installed-capacity", 0, 25, 1500, "MW");
-    animateValue("years-experience", 0, 15, 1500, "+");
+    const statsSection = document.querySelector('.stats');
+    if(statsSection) observer.observe(statsSection);
 });
+
 </script>
 
 </section>
@@ -164,12 +168,6 @@ and industrial facilities.
 Our team is committed to providing high-quality solar products including solar panels, 
 batteries, inverters, and complete solar installation services tailored to meet the 
 energy needs of our customers.
-</p>
-
-<p>
-Our mission is to help individuals and organizations reduce electricity costs and 
-achieve energy independence through modern solar technology and professional 
-electrical installation services.
 </p>
 
 </div>
